@@ -4,26 +4,56 @@ import "github.com/bootun/tun/token"
 
 type Lexer struct {
 	input        string
-	position     int // current position in input
-	readPosition int
-	ch           byte
+	position     int  // current position in input(point current char)
+	readPosition int  // current reading position in input (after current char)
+	ch           byte // current char under examination
 }
 
 func (l *Lexer) NextToken() token.Token {
-	tok := token.Token{
-		Literal: "",
-		Type:    "",
+	var tok token.Token
+	switch l.ch {
+	case '=':
+		tok = newToken(token.ASSIGN, l.ch)
+	case ';':
+		tok = newToken(token.SEMICOLON, l.ch)
+	case '(':
+		tok = newToken(token.LPAREN, l.ch)
+	case ')':
+		tok = newToken(token.RPAREN, l.ch)
+	case ',':
+		tok = newToken(token.COMMA, l.ch)
+	case '+':
+		tok = newToken(token.PLUS, l.ch)
+	case '{':
+		tok = newToken(token.LBRACE, l.ch)
+	case '}':
+		tok = newToken(token.RBRACE, l.ch)
+	case 0:
+		tok.Literal = ""
+		tok.Type = token.EOF
 	}
-	// TODO: implement me
+	l.readChar()
 	return tok
 }
 
-func (l *Lexer) readChar() {
-	// TODO: implement me
+func newToken(typ token.Type, lit byte) token.Token {
+	return token.Token{Type: typ, Literal: string(lit)}
 }
 
+// readChar make lexer pointer advance
+func (l *Lexer) readChar() {
+	if l.readPosition >= len(l.input) {
+		l.ch = 0
+		return
+	}
+	l.ch = l.input[l.readPosition]
+	l.position = l.readPosition
+	l.readPosition++
+}
+
+// New create a Lexer by src, the lexer has been initialized
 func New(src string) *Lexer {
-	// TODO: fix position
 	l := &Lexer{input: src}
+	l.readChar()
 	return l
 }
