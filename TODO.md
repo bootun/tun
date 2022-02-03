@@ -1,4 +1,10 @@
-Lexer
- - line number and column number
- - float, hex notation, Octal notation
- - unicode
+# Feature
+
+## Lexer
+ - [ ] line number and column number
+ - [ ] float, hex notation, Octal notation
+ - [ ] unicode
+
+## Parser
+
+
