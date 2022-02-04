@@ -112,10 +112,10 @@ if (5 < 10) {
 	for i, tt := range tests {
 		tok := lexer.NextToken()
 		if tok.Type != tt.expectedType {
-			t.Fatalf("tests[%d] - tokentype wrong. excepted: %q, got: %q", i, tt.expectedType, tok.Type)
+			t.Fatalf("tests[%d] - tokentype wrong. line:%d, column:%d, excepted: %q, got: %q", i, tok.Line, tok.Column, tt.expectedType, tok.Type)
 		}
 		if tok.Literal != tt.expectedLiteral {
-			t.Fatalf("tests[%d] - literal wrong. excepted: %q, got: %q", i, tt.expectedLiteral, tok.Literal)
+			t.Fatalf("tests[%d] - literal wrong. line:%d, column:%d, excepted: %q, got: %q", i, tok.Line, tok.Column, tt.expectedLiteral, tok.Literal)
 		}
 	}
 }

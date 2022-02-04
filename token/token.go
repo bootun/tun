@@ -3,6 +3,8 @@ package token
 type Type string
 
 type Token struct {
+	Line    int
+	Column  int
 	Literal string
 	Type    Type
 }
