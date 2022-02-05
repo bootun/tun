@@ -14,6 +14,8 @@ type Lexer struct {
 func (l *Lexer) NextToken() token.Token {
 	var tok token.Token
 	l.skipWhitespace()
+	column := l.curColumn
+	line := l.curLine
 	switch l.ch {
 	case '=':
 		if l.peekChar() == '=' {
@@ -21,9 +23,10 @@ func (l *Lexer) NextToken() token.Token {
 			l.readChar()
 			tok.Type = token.EQ
 			tok.Literal = string(ch) + string(l.ch)
-
+			tok.Line = line
+			tok.Column = column
 		} else {
-			tok = newToken(token.ASSIGN, l.ch, l.curLine, l.curColumn)
+			tok = newToken(token.ASSIGN, l.ch, line, column)
 		}
 	case '!':
 		if l.peekChar() == '=' {
@@ -34,52 +37,52 @@ func (l *Lexer) NextToken() token.Token {
 			tok.Line = l.curLine
 			tok.Column = l.curColumn
 		} else {
-			tok = newToken(token.BANG, l.ch, l.curLine, l.curColumn)
+			tok = newToken(token.BANG, l.ch, line, column)
 		}
 	case '-':
-		tok = newToken(token.MINUS, l.ch, l.curLine, l.curColumn)
+		tok = newToken(token.MINUS, l.ch, line, column)
 	case '/':
-		tok = newToken(token.SLASH, l.ch, l.curLine, l.curColumn)
+		tok = newToken(token.SLASH, l.ch, line, column)
 	case '*':
-		tok = newToken(token.ASTERISK, l.ch, l.curLine, l.curColumn)
+		tok = newToken(token.ASTERISK, l.ch, line, column)
 	case '>':
-		tok = newToken(token.GT, l.ch, l.curLine, l.curColumn)
+		tok = newToken(token.GT, l.ch, line, column)
 	case '<':
-		tok = newToken(token.LT, l.ch, l.curLine, l.curColumn)
+		tok = newToken(token.LT, l.ch, line, column)
 	case ';':
-		tok = newToken(token.SEMICOLON, l.ch, l.curLine, l.curColumn)
+		tok = newToken(token.SEMICOLON, l.ch, line, column)
 	case '(':
-		tok = newToken(token.LPAREN, l.ch, l.curLine, l.curColumn)
+		tok = newToken(token.LPAREN, l.ch, line, column)
 	case ')':
-		tok = newToken(token.RPAREN, l.ch, l.curLine, l.curColumn)
+		tok = newToken(token.RPAREN, l.ch, line, column)
 	case ',':
-		tok = newToken(token.COMMA, l.ch, l.curLine, l.curColumn)
+		tok = newToken(token.COMMA, l.ch, line, column)
 	case '+':
-		tok = newToken(token.PLUS, l.ch, l.curLine, l.curColumn)
+		tok = newToken(token.PLUS, l.ch, line, column)
 	case '{':
-		tok = newToken(token.LBRACE, l.ch, l.curLine, l.curColumn)
+		tok = newToken(token.LBRACE, l.ch, line, column)
 	case '}':
-		tok = newToken(token.RBRACE, l.ch, l.curLine, l.curColumn)
+		tok = newToken(token.RBRACE, l.ch, line, column)
 	case 0:
 		tok.Literal = ""
 		tok.Type = token.EOF
-		tok.Line = l.curLine
-		tok.Column = l.curColumn
+		tok.Line = line
+		tok.Column = column
 	default:
 		if isLetter(l.ch) {
 			tok.Literal = l.readIdentifier()
 			tok.Type = token.LookUpIdent(tok.Literal)
-			tok.Line = l.curLine
-			tok.Column = l.curColumn
+			tok.Line = line
+			tok.Column = column
 			return tok
 		} else if isDigit(l.ch) {
 			tok.Literal = l.readNumber()
 			tok.Type = token.INT
-			tok.Line = l.curLine
-			tok.Column = l.curColumn
+			tok.Line = line
+			tok.Column = column
 			return tok
 		} else {
-			tok = newToken(token.ILLEGAL, l.ch, l.curLine, l.curColumn)
+			tok = newToken(token.ILLEGAL, l.ch, line, column)
 			return tok
 		}
 	}
@@ -134,7 +137,7 @@ func (l *Lexer) readNumber() string {
 
 // New create a Lexer by src, the lexer has been initialized
 func New(src string) *Lexer {
-	l := &Lexer{input: src, curColumn: 1, curLine: 1}
+	l := &Lexer{input: src, curColumn: 0, curLine: 1}
 	l.readChar()
 	return l
 }
@@ -144,7 +147,7 @@ func (l *Lexer) skipWhitespace() {
 	for l.ch == ' ' || l.ch == '\t' || l.ch == '\n' || l.ch == '\r' {
 		if l.ch == '\n' {
 			l.curLine++
-			l.curColumn = 1
+			l.curColumn = 0
 		}
 		l.readChar()
 	}
