@@ -5,7 +5,7 @@ import "github.com/bootun/tun/token"
 type Lexer struct {
 	input        string
 	curLine      int
-	curColumn    int  // FIXME: incorrect
+	curColumn    int
 	position     int  // current position in input(point current char)
 	readPosition int  // current reading position in input (after current char)
 	ch           byte // current char under examination
@@ -16,6 +16,7 @@ func (l *Lexer) NextToken() token.Token {
 	l.skipWhitespace()
 	column := l.curColumn
 	line := l.curLine
+	// TODO: reduce the number of newToken function
 	switch l.ch {
 	case '=':
 		if l.peekChar() == '=' {

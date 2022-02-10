@@ -14,6 +14,7 @@ type Parser struct {
 	errors    []string
 }
 
+// New create a Parser instance
 func New(l *lexer.Lexer) *Parser {
 	p := &Parser{
 		l:      l,
@@ -25,6 +26,7 @@ func New(l *lexer.Lexer) *Parser {
 	return p
 }
 
+// ParseProgram build an Abstract Syntax Tree
 func (p *Parser) ParseProgram() *ast.Program {
 	program := &ast.Program{}
 	program.Statements = []ast.Statement{}

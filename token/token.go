@@ -61,6 +61,8 @@ var keywords = map[string]Type{
 	"false":  FALSE,
 }
 
+// LookUpIdent search keywords and return token type if
+// keyword exists, otherwise return token.IDENT
 func LookUpIdent(str string) Type {
 	if tok, ok := keywords[str]; ok {
 		return tok
