@@ -3,6 +3,7 @@ package lexer
 import "github.com/bootun/tun/token"
 
 type Lexer struct {
+	// TODO: migrate to io.Reader
 	input        string
 	curLine      int
 	curColumn    int
