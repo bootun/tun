@@ -9,6 +9,7 @@ type Lexer struct {
 	curColumn    int
 	position     int  // current position in input(point current char)
 	readPosition int  // current reading position in input (after current char)
+	// TODO: migrate to rune
 	ch           byte // current char under examination
 }
 
