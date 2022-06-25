@@ -2,20 +2,22 @@ package parser
 
 import (
 	"fmt"
+	"strconv"
+
 	"github.com/bootun/tun/ast"
 	"github.com/bootun/tun/lexer"
 	"github.com/bootun/tun/token"
 )
 
 const (
-    _ int = iota
-    LOWEST
-    EQUALS      // ==
-    LESSGREATER // > or <
-    SUM         // +
-    PRODUCT     // *
-    PREFIX      // -X or !X
-    CALL        // myFunction(X)
+	_ int = iota
+	LOWEST
+	EQUALS      // ==
+	LESSGREATER // > or <
+	SUM         // +
+	PRODUCT     // *
+	PREFIX      // -X or !X
+	CALL        // myFunction(X)
 )
 
 type Parser struct {
@@ -40,7 +42,8 @@ func New(l *lexer.Lexer) *Parser {
 		errors: []string{},
 	}
 	p.prefixParseFns = make(map[token.Type]prefixParseFn)
-    p.registerPrefix(token.IDENT, p.parseIdentifier)
+	p.registerPrefix(token.IDENT, p.parseIdentifier)
+	p.registerPrefix(token.INT, p.parseIntegerLiteral)
 	// read two tokens, so curToken and peekToken both set
 	p.nextToken()
 	p.nextToken()
@@ -48,7 +51,7 @@ func New(l *lexer.Lexer) *Parser {
 }
 
 func (p *Parser) parseIdentifier() ast.Expression {
-    return &ast.Identifier{Token: p.curToken, Value: p.curToken.Literal}
+	return &ast.Identifier{Token: p.curToken, Value: p.curToken.Literal}
 }
 
 // ParseProgram build an Abstract Syntax Tree
@@ -154,11 +157,24 @@ func (p *Parser) registerInfix(tokenType token.Type, fn infixParseFn) {
 }
 
 func (p *Parser) parseExpression(precedence int) ast.Expression {
-    prefix := p.prefixParseFns[p.curToken.Type]
-    if prefix == nil {
-        return nil
-    }
-    leftExp := prefix()
+	prefix := p.prefixParseFns[p.curToken.Type]
+	if prefix == nil {
+		return nil
+	}
+	leftExp := prefix()
 
-    return leftExp
+	return leftExp
+}
+
+func (p *Parser) parseIntegerLiteral() ast.Expression {
+	lit := &ast.IntegerLiteral{Token: p.curToken}
+
+	value, err := strconv.ParseInt(p.curToken.Literal, 10, 64)
+	if err != nil {
+		msg := fmt.Sprintf("could not parse %q as integer", p.curToken.Literal)
+		p.errors = append(p.errors, msg)
+		return nil
+	}
+	lit.Value = value
+	return lit
 }
