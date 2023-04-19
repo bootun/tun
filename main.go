@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/bootun/tun/repl"
 	"os"
+
+	"github.com/bootun/tun/repl"
 )
 
 const VERSION = "0.0.1-preview"

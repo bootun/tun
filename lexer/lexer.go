@@ -7,10 +7,10 @@ type Lexer struct {
 	input        string
 	curLine      int
 	curColumn    int
-	position     int  // current position in input(point current char)
-	readPosition int  // current reading position in input (after current char)
+	position     int // current position in input(point current char)
+	readPosition int // current reading position in input (after current char)
 	// TODO: migrate to rune
-	ch           byte // current char under examination
+	ch byte // current char under examination
 }
 
 func (l *Lexer) NextToken() token.Token {

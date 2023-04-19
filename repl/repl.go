@@ -3,9 +3,10 @@ package repl
 import (
 	"bufio"
 	"fmt"
+	"io"
+
 	"github.com/bootun/tun/lexer"
 	"github.com/bootun/tun/token"
-	"io"
 )
 
 const PROMPT = ">>"
